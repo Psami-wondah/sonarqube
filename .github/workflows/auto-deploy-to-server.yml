@@ -1,0 +1,38 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate .env file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          envkey_DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          envkey_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+
+          file_name: .env
+          fail_on_empty: false
+
+      - name: Build Docker images
+        run: |
+          docker compose build --force-rm --no-cache
+
+  run:
+    runs-on: self-hosted
+
+    needs:
+      - build
+
+    steps:
+      - name: Run Docker images
+        run: |
+          docker compose up -d --force-recreate --remove-orphans
