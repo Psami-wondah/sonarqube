@@ -23,7 +23,9 @@ services:
       - SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/${DATABASE_NAME}
       - SONAR_JDBC_USERNAME=${DATABASE_USER}
       - SONAR_JDBC_PASSWORD=${DATABASE_PASSWORD}
-      - SONAR_SEARCH_JAVAOPTS=-Xms512m -Xmx512m
+      - SONAR_WEB_JAVAOPTS=-server -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError
+      - SONAR_CE_JAVAOPTS=-Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError
+      - SONAR_SEARCH_JAVAOPTS=-Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError
     depends_on:
       - postgres
     ports:
